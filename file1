@@ -40,6 +40,12 @@ INSRRT INTO infa ('Mikrotik DNS', 'dns_mikrotika', '$ip_address');
 
 function Sozdanie_scripta_dlya_Cron {
 touch $HOME/script_dlya_cron.sh
-chmod+x script_dlya_cron.sh
+chmod+x script_dlya_cron.sh >> sudo crontab -e
 }
 Sozdanie_scripta_dlya_Cron
+
+
+function Peredacha_Dannblh_for_file_cron {
+#сюда добавить строки которые будут находиться в файле для проверки ай пи адреса в бд и если такого нет, то перезаписывать данные
+}
+Peredacha_Dannblh_for_file_cron
