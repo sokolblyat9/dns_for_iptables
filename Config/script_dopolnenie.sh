@@ -31,7 +31,7 @@ dns2=$(dig +short "$dns_name2")
 ssssssss
 #Затем я буду сравнивать dns имя с бд, выводом будет ай пи днс службы, если имя пустое или одинаковое с бд, то ничего не делать
 
-function logika {
+function logika1 {
 
 if [[ $dns1 == $ip_address1 || $dns1 == "" ]]; then
     break
@@ -41,6 +41,23 @@ if [[ $dns1 == $ip_address1 || $dns1 == "" ]]; then
 #Если ай пи адрес отличается от того что в бд, то перезаписать ай пи адрес в бд и затем удалить правила в iptables со старыми данными и добавить с новыми
 
 else
-
+    psql -h localhost -p 5432 -U postgres For_Cron -c "UPDATE infa SET 'IP адрес' = '$dns1' WHERE name = '$ip_address1';"
 fi
 }
+logika1
+
+
+function logika2 {
+
+if [[ $dns2 == $ip_address2 || $dns2 == "" ]]; then
+    break
+
+
+
+#Если ай пи адрес отличается от того что в бд, то перезаписать ай пи адрес в бд и затем удалить правила в iptables со старыми данными и добавить с новыми
+
+else
+    psql -h localhost -p 5432 -U postgres For_Cron -c "UPDATE infa SET 'IP адрес' = '$dns2' WHERE name = '$ip_address2';"
+fi
+}
+logika2
