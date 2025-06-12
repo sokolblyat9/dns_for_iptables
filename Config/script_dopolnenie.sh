@@ -42,6 +42,17 @@ if [[ $dns1 == $ip_address1 || $dns1 == "" ]]; then
 
 else
     psql -h localhost -p 5432 -U postgres For_Cron -c "UPDATE infa SET 'IP адрес' = '$dns1' WHERE name = '$ip_address1';"
+    sudo iptables -D INPUT 4
+    sudo iptables -D INPUT 6
+    sudo iptables -D INPUT 8
+    sudo iptables -D INPUT 10
+    sudo iptables -D INPUT 12
+    sudo iptables -A INPUT -p tcp -dport ПОРТ-SSH -s "$dns1" -j ACCEPT
+    sudo iptables -A INPUT -p tcp -dport 80 -s "$dns1" -j ACCEPT
+    sudo iptables -A INPUT -p tcp -dport 443 -s "$dns1" -j ACCEPT
+    sudo iptables -A INPUT -p tcp -dport ПОРТ-ДЛЯ-ПРОКСИ -s "$dns1" -j ACCEPT
+    sudo iptables -A INPUT -p tcp -dport ПОРТ-ДЛЯ-ПРОКСИ+ВЕБ -s "$dns1" -j ACCEPT
+
 fi
 }
 logika1
@@ -58,6 +69,31 @@ if [[ $dns2 == $ip_address2 || $dns2 == "" ]]; then
 
 else
     psql -h localhost -p 5432 -U postgres For_Cron -c "UPDATE infa SET 'IP адрес' = '$dns2' WHERE name = '$ip_address2';"
+    sudo iptables -D INPUT 5
+    sudo iptables -D INPUT 7
+    sudo iptables -D INPUT 9
+    sudo iptables -D INPUT 11
+    sudo iptables -D INPUT 13
+    sudo iptables -A INPUT -p tcp -dport ПОРТ-SSH -s "$dns2" -j ACCEPT
+    sudo iptables -A INPUT -p tcp -dport 80 -s "$dns2" -j ACCEPT
+    sudo iptables -A INPUT -p tcp -dport 443 -s "$dns2" -j ACCEPT
+    sudo iptables -A INPUT -p tcp -dport ПОРТ-ДЛЯ-ПРОКСИ -s "$dns2" -j ACCEPT
+    sudo iptables -A INPUT -p tcp -dport ПОРТ-ДЛЯ-ПРОКСИ+ВЕБ -s "$dns2" -j ACCEPT
 fi
 }
 logika2
+
+
+#function Sozdanie_pravil_v_IPTables {
+
+
+
+#удалить не актуальные правила iptables!!!
+
+
+############
+
+#сохранить конфиг iptables правил где то
+
+#}
+#Sozdanie_pravil_v_IPTables

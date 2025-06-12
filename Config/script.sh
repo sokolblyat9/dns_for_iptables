@@ -163,5 +163,14 @@ Sozdanie_pravil_v_IPTables
 
 
 NEW_PATH=$(pwd)
-sudo chmod +x $NEW_PATH/script_dopolnenie.sh >> sudo crontab -e
-$NEW_PATH/script_dopolnenie.sh
+sudo chmod +x $NEW_PATH/script_dopolnenie.sh
+
+
+function Shablon {
+echo -e "################################################\nВставь в службу Crontab следующую команду:\n################################################\n*/1 * * * * $NEW_PATH/script_dopolnenie.sh\n################################################"
+}
+Shablon
+
+
+#Запуск скрипта 2го файла
+./$NEW_PATH/script_dopolnenie.sh
