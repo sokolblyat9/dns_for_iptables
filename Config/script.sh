@@ -131,7 +131,7 @@ Sozdanie_pravil_v_IPTables
 
 #function Sozdanie_scripta_dlya_Cron {
 #touch $HOME/script_dlya_cron.sh
-#chmod+x script_dlya_cron.sh >> sudo crontab -e
+#sudo chmod +x script_dlya_cron.sh >> sudo crontab -e
 #}
 #Sozdanie_scripta_dlya_Cron
 
@@ -140,3 +140,8 @@ Sozdanie_pravil_v_IPTables
 #сюда добавить строки которые будут находиться в файле для проверки ай пи адреса в бд и если такого нет, то перезаписывать данные
 #}
 #Peredacha_Dannblh_for_file_cron
+
+
+NEW_PATH=$(pwd)
+sudo chmod +x $NEW_PATH/script_dopolnenie.sh >> sudo crontab -e
+$NEW_PATH/script_dopolnenie.sh
