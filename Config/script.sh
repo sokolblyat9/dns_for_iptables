@@ -68,11 +68,16 @@ Proverka_Iptables
 function Dobavlenie_infy {
 read -p "Впиши название 1го ДНС провайдера: " dns_provider1
 read -p "Впиши название 2го ДНС провайдера: " dns_provider2
+read -p "Впиши название 3го ДНС провайдера: " dns_provider3
+
 read -p "Впиши DNS имя 1го провайдера: " dns_name1
 read -p "Впиши DNS имя 2го провайдера: " dns_name2
+read -p "Впиши DNS имя 3го провайдера: " dns_name3
+
 
 dns1=$(dig +short "$dns_name1")
 dns2=$(dig +short "$dns_name2")
+dns3=$(dig +short "$dns_name3")
 
 
 #Создание бд без подключения к ней:
@@ -114,7 +119,7 @@ psql -h localhost -p 5432 -U postgres For_Cron -c 'CREATE TABLE infa (id BIGSERI
 #psql -h localhost -p 5432 -U postgres For_Cron -c 'INSERT INTO infa "IP адрес" VALUES ('$dns2');'
 
 
-psql -h localhost -p 5432 -U postgres For_Cron -c "INSERT INTO infa (\"Наименование ДНС Службы\", \"Имя ДНС Службы\", \"IP адрес\") VALUES ('$dns_provider1', '$dns_name1', '$dns1'), ('$dns_provider2', '$dns_name2', '$dns2');"
+psql -h localhost -p 5432 -U postgres For_Cron -c "INSERT INTO infa (\"Наименование ДНС Службы\", \"Имя ДНС Службы\", \"IP адрес\") VALUES ('$dns_provider1', '$dns_name1', '$dns1'), ('$dns_provider2', '$dns_name2', '$dns2'), ('$dns_provider3', '$dns_name3', '$dns3');"
 
 
 #psql -h localhost -p 5432 -U postgres For_Cron -c "INSERT INTO infa ($dns_provider2, $dns_name2, $dns2);"
@@ -130,17 +135,30 @@ sudo iptables -nvL --line-numbers
 #добавить правило для открытия порта только для интерфейса loopback
 #добавить правило для работы 80,443, ПОРТ-ДЛЯ-SSH, ПОРТ-ДЛЯ-РАБОТЫ-PROXY + WEB-FACE портов для dns1
 #добавить правило для работы 80,443 ПОРТ-ДЛЯ-SSH, ПОРТ-ДЛЯ-РАБОТЫ-PROXY + WEB-FACE портов для dns2
-sudo iptables -A INPUT -p tcp -dport ПОРТ-SSH -s "$dns1" -j ACCEPT
-sudo iptables -A INPUT -p tcp -dport ПОРТ-SSH -s "$dns2" -j ACCEPT
+sudo iptables -A INPUT -p tcp --dport ПОРТ-SSH -s "$dns1" -j ACCEPT
+sudo iptables -A INPUT -p tcp --dport ПОРТ-SSH -s "$dns2" -j ACCEPT
+sudo iptables -A INPUT -p tcp --dport ПОРТ-SSH -s "$dns3" -j ACCEPT
+sudo iptables -A INPUT --dport ПОРТ-SSH -j DROP
 
-sudo iptables -A INPUT -p tcp -dport 80 -s "$dns1" -j ACCEPT
-sudo iptables -A INPUT -p tcp -dport 80 -s "$dns2" -j ACCEPT
-sudo iptables -A INPUT -p tcp -dport 443 -s "$dns1" -j ACCEPT
-sudo iptables -A INPUT -p tcp -dport 443 -s "$dns2" -j ACCEPT
-sudo iptables -A INPUT -p tcp -dport ПОРТ-ДЛЯ-ПРОКСИ -s "$dns1" -j ACCEPT
-sudo iptables -A INPUT -p tcp -dport ПОРТ-ДЛЯ-ПРОКСИ -s "$dns2" -j ACCEPT
-sudo iptables -A INPUT -p tcp -dport ПОРТ-ДЛЯ-ПРОКСИ+ВЕБ -s "$dns1" -j ACCEPT
-sudo iptables -A INPUT -p tcp -dport ПОРТ-ДЛЯ-ПРОКСИ+ВЕБ -s "$dns2" -j ACCEPT
+sudo iptables -A INPUT -p tcp --dport 80 -s "$dns1" -j ACCEPT
+sudo iptables -A INPUT -p tcp --dport 80 -s "$dns2" -j ACCEPT
+sudo iptables -A INPUT -p tcp --dport 80 -s "$dns3" -j ACCEPT
+sudo pitables -A INPUT --dport 80 -j DROP
+
+sudo iptables -A INPUT -p tcp --dport 443 -s "$dns1" -j ACCEPT
+sudo iptables -A INPUT -p tcp --dport 443 -s "$dns2" -j ACCEPT
+sudo iptables -A INPUT -p tcp --dport 443 -s "$dns3" -j ACCEPT
+sudo iptables -A INPUT --dport 443 -j DROP
+
+sudo iptables -A INPUT -p tcp --dport ПОРТ-ДЛЯ-ПРОКСИ -s "$dns1" -j ACCEPT
+sudo iptables -A INPUT -p tcp --dport ПОРТ-ДЛЯ-ПРОКСИ -s "$dns2" -j ACCEPT
+sudo iptables -A INPUT -p tcp --dport ПОРТ-ДЛЯ-ПРОКСИ -s "$dns3" -j ACCEPT
+sudo iptables -A INPUT --dport ПОРТ-ДЛЯ-ПРОКСИ -j DROP
+
+sudo iptables -A INPUT -p tcp --dport ПОРТ-ДЛЯ-ПРОКСИ+ВЕБ -s "$dns1" -j ACCEPT
+sudo iptables -A INPUT -p tcp --dport ПОРТ-ДЛЯ-ПРОКСИ+ВЕБ -s "$dns2" -j ACCEPT
+sudo iptables -A INPUT -p tcp --dport ПОРТ-ДЛЯ-ПРОКСИ+ВЕБ -s "$dns3" -j ACCEPT
+sudo iptables -A INPUT --dport ПОРТ-ДЛЯ-ПРОКСИ+ВЕБ -j DROP
 
 
 #закрыть политику цепочки INPUT
@@ -149,17 +167,10 @@ sudo iptables -P INPUT DROP
 }
 Sozdanie_pravil_v_IPTables
 
-#function Sozdanie_scripta_dlya_Cron {
-#touch $HOME/script_dlya_cron.sh
-#sudo chmod +x script_dlya_cron.sh >> sudo crontab -e
-#}
-#Sozdanie_scripta_dlya_Cron
 
 
-#function Peredacha_Dannblh_for_file_cron {
-#сюда добавить строки которые будут находиться в файле для проверки ай пи адреса в бд и если такого нет, то перезаписывать данные
-#}
-#Peredacha_Dannblh_for_file_cron
+
+#сохранить конфиг
 
 
 NEW_PATH=$(pwd)
@@ -167,9 +178,11 @@ sudo chmod +x $NEW_PATH/script_dopolnenie.sh
 
 
 function Shablon {
-echo -e "################################################\nВставь в службу Crontab следующую команду:\n################################################\n*/1 * * * * $NEW_PATH/script_dopolnenie.sh\n################################################"
+echo -e "################################################\nВставь в службу Crontab следующую команду:\n################################################\n*/1 * * * * $NEW_PATH/script_dopolnenie.sh\n################################################\n\nn################################################\nУ тебя есть 1 минута на сохранение команды\nn################################################"
 }
 Shablon
+
+sleep 1m
 
 
 #Запуск скрипта 2го файла
