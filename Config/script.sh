@@ -128,44 +128,45 @@ psql -h localhost -p 5432 -U postgres For_Cron -c "INSERT INTO infa (\"Наим�
 Dobavlenie_infy
 
 
-function Sozdanie_pravil_v_IPTables {
-sudo iptables -nvL --line-numbers
+###function Sozdanie_pravil_v_IPTables {
+###sudo iptables -nvL --line-numbers
 #добавить правило для нормальной работы ping
 #добавить правило для инвалидных пакетов, которые будут отбрасываться
 #добавить правило для открытия порта только для интерфейса loopback
 #добавить правило для работы 80,443, ПОРТ-ДЛЯ-SSH, ПОРТ-ДЛЯ-РАБОТЫ-PROXY + WEB-FACE портов для dns1
 #добавить правило для работы 80,443 ПОРТ-ДЛЯ-SSH, ПОРТ-ДЛЯ-РАБОТЫ-PROXY + WEB-FACE портов для dns2
-sudo iptables -A INPUT -p tcp --dport ПОРТ-SSH -s "$dns1" -j ACCEPT
-sudo iptables -A INPUT -p tcp --dport ПОРТ-SSH -s "$dns2" -j ACCEPT
-sudo iptables -A INPUT -p tcp --dport ПОРТ-SSH -s "$dns3" -j ACCEPT
-sudo iptables -A INPUT --dport ПОРТ-SSH -j DROP
+###sudo iptables -A INPUT -p tcp --dport ПОРТ-SSH -s "$dns1" -j ACCEPT
+###sudo iptables -A INPUT -p tcp --dport ПОРТ-SSH -s "$dns2" -j ACCEPT
+###sudo iptables -A INPUT -p tcp --dport ПОРТ-SSH -s "$dns3" -j ACCEPT
+###sudo iptables -A INPUT --dport ПОРТ-SSH -j DROP
 
-sudo iptables -A INPUT -p tcp --dport 80 -s "$dns1" -j ACCEPT
-sudo iptables -A INPUT -p tcp --dport 80 -s "$dns2" -j ACCEPT
-sudo iptables -A INPUT -p tcp --dport 80 -s "$dns3" -j ACCEPT
-sudo pitables -A INPUT --dport 80 -j DROP
+###sudo iptables -A INPUT -p tcp --dport 80 -s "$dns1" -j ACCEPT
+###sudo iptables -A INPUT -p tcp --dport 80 -s "$dns2" -j ACCEPT
+###sudo iptables -A INPUT -p tcp --dport 80 -s "$dns3" -j ACCEPT
+###sudo pitables -A INPUT --dport 80 -j DROP
 
-sudo iptables -A INPUT -p tcp --dport 443 -s "$dns1" -j ACCEPT
-sudo iptables -A INPUT -p tcp --dport 443 -s "$dns2" -j ACCEPT
-sudo iptables -A INPUT -p tcp --dport 443 -s "$dns3" -j ACCEPT
-sudo iptables -A INPUT --dport 443 -j DROP
+###sudo iptables -A INPUT -p tcp --dport 443 -s "$dns1" -j ACCEPT
+###sudo iptables -A INPUT -p tcp --dport 443 -s "$dns2" -j ACCEPT
+###sudo iptables -A INPUT -p tcp --dport 443 -s "$dns3" -j ACCEPT
+###sudo iptables -A INPUT --dport 443 -j DROP
 
-sudo iptables -A INPUT -p tcp --dport ПОРТ-ДЛЯ-ПРОКСИ -s "$dns1" -j ACCEPT
-sudo iptables -A INPUT -p tcp --dport ПОРТ-ДЛЯ-ПРОКСИ -s "$dns2" -j ACCEPT
-sudo iptables -A INPUT -p tcp --dport ПОРТ-ДЛЯ-ПРОКСИ -s "$dns3" -j ACCEPT
-sudo iptables -A INPUT --dport ПОРТ-ДЛЯ-ПРОКСИ -j DROP
+###sudo iptables -A INPUT -p tcp --dport ПОРТ-ДЛЯ-ПРОКСИ -s "$dns1" -j ACCEPT
+###sudo iptables -A INPUT -p tcp --dport ПОРТ-ДЛЯ-ПРОКСИ -s "$dns2" -j ACCEPT
+###sudo iptables -A INPUT -p tcp --dport ПОРТ-ДЛЯ-ПРОКСИ -s "$dns3" -j ACCEPT
+###sudo iptables -A INPUT --dport ПОРТ-ДЛЯ-ПРОКСИ -j DROP
 
-sudo iptables -A INPUT -p tcp --dport ПОРТ-ДЛЯ-ПРОКСИ+ВЕБ -s "$dns1" -j ACCEPT
-sudo iptables -A INPUT -p tcp --dport ПОРТ-ДЛЯ-ПРОКСИ+ВЕБ -s "$dns2" -j ACCEPT
-sudo iptables -A INPUT -p tcp --dport ПОРТ-ДЛЯ-ПРОКСИ+ВЕБ -s "$dns3" -j ACCEPT
-sudo iptables -A INPUT --dport ПОРТ-ДЛЯ-ПРОКСИ+ВЕБ -j DROP
+###sudo iptables -A INPUT -p tcp --dport ПОРТ-ДЛЯ-ПРОКСИ+ВЕБ -s "$dns1" -j ACCEPT
+###sudo iptables -A INPUT -p tcp --dport ПОРТ-ДЛЯ-ПРОКСИ+ВЕБ -s "$dns2" -j ACCEPT
+###sudo iptables -A INPUT -p tcp --dport ПОРТ-ДЛЯ-ПРОКСИ+ВЕБ -s "$dns3" -j ACCEPT
+###sudo iptables -A INPUT --dport ПОРТ-ДЛЯ-ПРОКСИ+ВЕБ -j DROP
 
 
 #закрыть политику цепочки INPUT
-sudo iptables -P INPUT DROP
+###sudo iptables -P INPUT DROP
 #сохранить правила iptables в файлик
-}
-Sozdanie_pravil_v_IPTables
+###}
+###Sozdanie_pravil_v_IPTables
+###УБРАТЬ #  ГДЕ 3 ШТУКИ
 
 
 
@@ -186,4 +187,4 @@ sleep 1m
 
 
 #Запуск скрипта 2го файла
-./$NEW_PATH/script_dopolnenie.sh
+"$NEW_PATH/script_dopolnenie.sh"
