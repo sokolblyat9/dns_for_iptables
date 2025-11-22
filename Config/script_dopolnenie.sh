@@ -33,14 +33,14 @@ NEW_PATH=$(pwd)
 
 
 #Здесь думаю после 1ой настройки сервера, обратиться к бд, заранее сохраняя значения в переменные
-dns_provider1=$(psql -h localhost -p 5432 -U postgres For_Cron -c 'SELECT "Наименование ДНС Службы" from infa WHERE id = '1';')
-dns_provider2=$(psql -h localhost -p 5432 -U postgres For_Cron -c 'SELECT "Наименование ДНС Службы" from infa WHERE id = '2';')
+dns_provider1=$(psql -h localhost -p 5432 -U postgres For_Cron -t -A -c 'SELECT "Наименование ДНС Службы" from infa WHERE id = '1';')
+dns_provider2=$(psql -h localhost -p 5432 -U postgres For_Cron -t -A -c 'SELECT "Наименование ДНС Службы" from infa WHERE id = '2';')
 
-dns_name1=$(psql -h localhost -p 5432 -U postgres For_Cron -c 'SELECT "Имя ДНС Службы" from infa WHERE id = '1';')
-dns_name2=$(psql -h localhost -p 5432 -U postgres For_Cron -c 'SELECT "Имя ДНС Службы" from infa WHERE id = '2';')
+dns_name1=$(psql -h localhost -p 5432 -U postgres For_Cron -t -A -c 'SELECT "Имя ДНС Службы" from infa WHERE id = '1';')
+dns_name2=$(psql -h localhost -p 5432 -U postgres For_Cron -t -A -c 'SELECT "Имя ДНС Службы" from infa WHERE id = '2';')
 
-ip_address1=$(psql -h localhost -p 5432 -U postgres For_Cron -c 'SELECT "IP адрес" from infa WHERE id = '1';')
-ip_address2=$(psql -h localhost -p 5432 -U postgres For_Cron -c 'SELECT "IP адрес" from infa WHERE id = '2';')
+ip_address1=$(psql -h localhost -p 5432 -U postgres For_Cron -t -A -c 'SELECT "IP адрес" from infa WHERE id = '1';')
+ip_address2=$(psql -h localhost -p 5432 -U postgres For_Cron -t -A -c 'SELECT "IP адрес" from infa WHERE id = '2';')
 #ip_pustoe_pole1=$(psql -h localhost -p 5432 -U postgres For_Cron -c "SELECT 'IP адрес' from infa WHERE id = '1';")
 #ip_pustoe_pole2=$(psql -h localhost -p 5432 -U postgres For_Cron -c "SELECT 'IP адрес' from infa WHERE id = '2';")
 
@@ -50,7 +50,9 @@ echo $dns_name2
 
 
 dns1=$(dig +short "$dns_name1")
+echo "$dns1"
 dns2=$(dig +short "$dns_name2")
+echo "$dns2"
 
 #Затем я буду сравнивать dns имя с бд, выводом будет ай пи днс службы, если имя пустое или одинаковое с бд, то ничего не делать
 
