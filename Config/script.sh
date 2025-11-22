@@ -70,14 +70,18 @@ read -p "Впиши название 1го ДНС провайдера: " dns_pr
 read -p "Впиши название 2го ДНС провайдера: " dns_provider2
 read -p "Впиши название 3го ДНС провайдера: " dns_provider3
 
-read -p "Впиши DNS имя 1го провайдера: " dns_name1
-read -p "Впиши DNS имя 2го провайдера: " dns_name2
-read -p "Впиши DNS имя 3го провайдера: " dns_name3
+read -p "Впиши DNS 1: " dns_name1
+read -p "Впиши DNS 2: " dns_name2
+read -p "Впиши DNS 3: " dns_name3
 
 
 dns1=$(dig +short "$dns_name1")
 dns2=$(dig +short "$dns_name2")
 dns3=$(dig +short "$dns_name3")
+
+massiv1=()
+massiv2=()
+massiv3=()
 
 
 #Создание бд без подключения к ней:
@@ -118,8 +122,30 @@ psql -h localhost -p 5432 -U postgres For_Cron -c 'CREATE TABLE infa (id BIGSERI
 #psql -h localhost -p 5432 -U postgres For_Cron -c 'INSERT INTO infa "Имя ДНС Службы" VALUES ('$dns_name2');'
 #psql -h localhost -p 5432 -U postgres For_Cron -c 'INSERT INTO infa "IP адрес" VALUES ('$dns2');'
 
+massiv1+=$dns1
+massiv2+=$dns2
+massiv3+=$dns3
+echo $massiv1
+echo
+echo $massiv2
+echo
+echo $massiv3
+echo
+for ip_dns1 in $massiv1
+    do
+    psql -h localhost -p 5432 -U postgres For_Cron -c "INSERT INTO infa (\"Наименование ДНС Службы\", \"Имя ДНС Службы\", \"IP адрес\") VALUES ('$dns_provider1', '$dns_name1', '$ip_dns1');"
+done
 
-psql -h localhost -p 5432 -U postgres For_Cron -c "INSERT INTO infa (\"Наименование ДНС Службы\", \"Имя ДНС Службы\", \"IP адрес\") VALUES ('$dns_provider1', '$dns_name1', '$dns1'), ('$dns_provider2', '$dns_name2', '$dns2'), ('$dns_provider3', '$dns_name3', '$dns3');"
+for ip_dns2 in $massiv2
+    do
+    psql -h localhost -p 5432 -U postgres For_Cron -c "INSERT INTO infa (\"Наименование ДНС Службы\", \"Имя ДНС Службы\", \"IP адрес\") VALUES ('$dns_provider2', '$dns_name2', '$ip_dns2');"
+done
+
+for ip_dns3 in $massiv3
+    do
+    psql -h localhost -p 5432 -U postgres For_Cron -c "INSERT INTO infa (\"Наименование ДНС Службы\", \"Имя ДНС Службы\", \"IP адрес\") VALUES ('$dns_provider3', '$dns_name3', '$ip_dns3');"
+    #psql -h localhost -p 5432 -U postgres For_Cron -c "INSERT INTO infa (\"Наименование ДНС Службы\", \"Имя ДНС Службы\", \"IP адрес\") VALUES ('$dns_provider1', '$dns_name1', '$ip_dns1'), ('$dns_provider2', '$dns_name2', '$ip_dns2'), ('$dns_provider3', '$dns_name3', '$ip_dns3');"
+done
 
 
 #psql -h localhost -p 5432 -U postgres For_Cron -c "INSERT INTO infa ($dns_provider2, $dns_name2, $dns2);"
