@@ -50,6 +50,34 @@ fi
 Proverka_Iptables
 
 
+
+function Proverka_Iptables-Persistent {
+echo "Проверим установлен ли IPTables на системе"
+os_release=$(uname -a)
+proverka_download_iptables_persistent=$(iptables-persistent --version)
+proverka_download_iptables_save=$(iptables-save --version)
+if [[ $os_release == *"Ubuntu"* || $os_release == *"Debian"* ]]; then
+    if [[ $proverka_download_iptables_persistent == *"iptables v"* ]]; then
+        echo "IPTABLES установлен"
+
+    else
+        echo "Установлю IPTABLES"
+        sudo apt install iptables-persistent -y >/dev/null
+    fi
+elif [[ $os_release == *"MANJARO"* ]]; then
+    if [[ $proverka_download_iptables_save == *"iptables-save"* ]]; then
+        echo "IPTABLES УСТАНОВЛЕН"
+    else
+        echo "Установлю IPTABLES"
+        sudo pacman -S iptables-nft
+    fi
+else
+    echo "Ты точно используешь какой-нибудь фаервол???"
+fi
+}
+Proverka_Iptables-Persistent
+
+
 #function Proverka_IP {
 #read -p "Введи DNS имя своего провайдера DDNS1: " provider_dns1
 #read -p "Введи DNS имя своего провайдера DDNS2: " provider_dns2
@@ -154,7 +182,40 @@ done
 Dobavlenie_infy
 
 
-###function Sozdanie_pravil_v_IPTables {
+function Sozdanie_pravil_v_IPTables {
+
+iptables -A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+iptables -A INPUT -i lo -j ACCEPT
+iptables -A INPUT -m conntrack --ctstate INVALID -j DROP
+
+iptables -A INPUT -s "$dns1" 185.173.74.22 -p icmp -j ACCEPT
+iptables -A INPUT -s "$dns2" 185.203.118.232 -p icmp -j ACCEPT
+iptables -A INPUT -s "$dns3" 92.55.62.203 -p icmp -j ACCEPT
+iptables -A INPUT -p icmp -j DROP
+
+iptables -A INPUT -s "$dns1" 185.173.74.22 -p tcp --dport 65505 -j ACCEPT
+iptables -A INPUT -s "$dns2" 185.203.118.232 -p tcp --dport 65505 -j ACCEPT
+iptables -A INPUT -s "$dns3" 92.55.62.203 -p tcp --dport 65505 -j ACCEPT
+iptables -A INPUT -p tcp --dport 65505 -j DROP
+iptables -A INPUT -p udp --dport 65505 -j DROP
+
+iptables -A INPUT -s "$dns1" 185.173.74.22 -p tcp --dport 65506 -j ACCEPT
+iptables -A INPUT -s "$dns2" 185.203.118.232 -p tcp --dport 65506 -j ACCEPT
+iptables -A INPUT -s "$dns3" 92.55.62.203 -p tcp --dport 65506 -j ACCEPT
+iptables -A INPUT -p tcp --dport 65506 -j DROP
+iptables -A INPUT -p udp --dport 65506 -j DROP
+
+
+iptables -A INPUT -p tcp --dport 443 -j ACCEPT
+
+
+
+
+
+iptables -A INPUT -j DROP
+
+iptables -P INPUT DROP
+
 ###sudo iptables -nvL --line-numbers
 #добавить правило для нормальной работы ping
 #добавить правило для инвалидных пакетов, которые будут отбрасываться
@@ -190,8 +251,8 @@ Dobavlenie_infy
 #закрыть политику цепочки INPUT
 ###sudo iptables -P INPUT DROP
 #сохранить правила iptables в файлик
-###}
-###Sozdanie_pravil_v_IPTables
+}
+Sozdanie_pravil_v_IPTables
 ###УБРАТЬ #  ГДЕ 3 ШТУКИ
 
 
