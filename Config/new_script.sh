@@ -11,7 +11,7 @@ if [[ $os_release == *"Ubuntu"* || $os_release == *"Debian"* ]]; then
         echo "Установлю PostgreSQL"
         sudo apt install postgresql -y >/dev/null
     fi
-elif [[ $os_release == *"MANJARO"* ]]; then
+elif [[ $os_release == *"MANJARO"* || $os_release == *"archlinux"* ]]; then
     if [[ $proverka_download_bd == *"(PostgreSQL)"* ]]; then
         echo "PostgreSQL УСТАНОВЛЕН"
     else
@@ -36,7 +36,7 @@ if [[ $os_release == *"Ubuntu"* || $os_release == *"Debian"* ]]; then
         echo "Установлю IPTABLES"
         sudo apt install iptables -y >/dev/null
     fi
-elif [[ $os_release == *"MANJARO"* ]]; then
+elif [[ $os_release == *"MANJARO"* || $os_release == *"archlinux"* ]]; then
     if [[ $proverka_download_iptables == *"iptables v"* ]]; then
         echo "IPTABLES УСТАНОВЛЕН"
     else
@@ -64,48 +64,56 @@ if [[ $os_release == *"Ubuntu"* || $os_release == *"Debian"* ]]; then
         echo "Установлю IPTABLES"
         sudo apt install iptables-persistent -y >/dev/null
     fi
-elif [[ $os_release == *"MANJARO"* ]]; then
-    if [[ $proverka_download_iptables_save == *"iptables-save"* ]]; then
-        echo "IPTABLES УСТАНОВЛЕН"
-    else
-        echo "Установлю IPTABLES"
-        sudo pacman -S iptables-nft
-    fi
+
 else
     echo "Ты точно используешь какой-нибудь фаервол???"
 fi
 }
 Proverka_Iptables-Persistent
 
+function Proverka_DIG {
+os_release=$(uname -a)
+proverka_download_dig=$(dig -v)
+if [[ $os_release == *"MANJARO"* || $os_release == *"archlinux"* ]]; then
+    if [[ $proverka_download_dig == *"DiG"* ]]; then
+        echo "Утилита DIG в составе пакета BIND установлена"
+    else
+        sudo pacman -Sy bind
+    fi
+else
+    echo "Ты юзаешь другую систему"
+fi
+}
+Proverka_DIG
 
 
 #Рабочий код:
-#function DNS_Provider_And_Plus_BD_And_Plus_Firewall {
-#massiv_ip_addresov=()
-#echo "Создам базу данных для хранения значений"
-#createdb -h localhost -p 5432 -U postgres For_Cron
-#psql -h localhost -p 5432 -U postgres For_Cron -c 'CREATE TABLE infa (id BIGSERIAL NOT NULL PRIMARY KEY, "Наименование ДНС Службы" VARCHAR(30) NOT NULL, "Имя ДНС Службы" VARCHAR(50) NOT NULL, "IP адрес" VARCHAR(160));'
-#read -p "Сколько хочешь добавить днс провайдеров?   " kolichestvo
-#for (( a=1; a<=$kolichestvo; a++ ));
-#do
-#    read -p "Введи название провайдера:   " dns_provider
-#    read -p "Введи название DNS имя провайдера:   " dns_name_provider
-#    massiv_ip_addresov+=$(dig +short $dns_name_provider)
-#    echo ${massiv_ip_addresov[@]}
+function DNS_Provider_And_Plus_BD_And_Plus_Firewall {
+massiv_ip_addresov=()
+echo "Создам базу данных для хранения значений"
+createdb -h localhost -p 5432 -U postgres For_Cron
+psql -h localhost -p 5432 -U postgres For_Cron -c 'CREATE TABLE infa (id BIGSERIAL NOT NULL PRIMARY KEY, "Наименование ДНС Службы" VARCHAR(30) NOT NULL, "Имя ДНС Службы" VARCHAR(50) NOT NULL, "IP адрес" VARCHAR(160));'
+read -p "Сколько хочешь добавить днс провайдеров?   " kolichestvo
+for (( a=1; a<=$kolichestvo; a++ ));
+do
+    read -p "Введи название провайдера:   " dns_provider
+    read -p "Введи название DNS имя провайдера:   " dns_name_provider
+    massiv_ip_addresov+=$(dig +short $dns_name_provider)
+    echo ${massiv_ip_addresov[@]}
 
-#   echo "Внесу значения в базу данных"
-#    for IP_and_DNS in $massiv_ip_addresov
-#    do
-#        psql -h localhost -p 5432 -U postgres For_Cron -c "INSERT INTO infa (\"Наименование ДНС Службы\", \"Имя ДНС Службы\", \"IP адрес\") VALUES ('$dns_provider', '$dns_name_provider', '$IP_and_DNS');"
-#    done
+   echo "Внесу значения в базу данных"
+    for IP_and_DNS in $massiv_ip_addresov
+    do
+        psql -h localhost -p 5432 -U postgres For_Cron -c "INSERT INTO infa (\"Наименование ДНС Службы\", \"Имя ДНС Службы\", \"IP адрес\") VALUES ('$dns_provider', '$dns_name_provider', '$IP_and_DNS');"
+    done
 
-#    massiv_ip_addresov=""
+    massiv_ip_addresov=""
 
 
-#done
+done
 
-#}
-#DNS_Provider_And_Plus_BD_And_Plus_Firewall
+}
+DNS_Provider_And_Plus_BD_And_Plus_Firewall
 
 massiv_dns_name=($(psql -h localhost -p 5432 -U postgres -d For_Cron -t -c "select distinct \"Наименование ДНС Службы\" from infa;"))
 
