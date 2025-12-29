@@ -181,40 +181,40 @@ done
 }
 Dobavlenie_infy
 
+#РАБОЧИЙ СКРИПТ
+#function Sozdanie_pravil_v_IPTables {
 
-function Sozdanie_pravil_v_IPTables {
+#iptables -A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+#iptables -A INPUT -i lo -j ACCEPT
+#iptables -A INPUT -m conntrack --ctstate INVALID -j DROP
 
-iptables -A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
-iptables -A INPUT -i lo -j ACCEPT
-iptables -A INPUT -m conntrack --ctstate INVALID -j DROP
+#iptables -A INPUT -s "$dns1" 185.173.74.22 -p icmp -j ACCEPT
+#iptables -A INPUT -s "$dns2" 185.203.118.232 -p icmp -j ACCEPT
+#iptables -A INPUT -s "$dns3" 92.55.62.203 -p icmp -j ACCEPT
+#iptables -A INPUT -p icmp -j DROP
 
-iptables -A INPUT -s "$dns1" 185.173.74.22 -p icmp -j ACCEPT
-iptables -A INPUT -s "$dns2" 185.203.118.232 -p icmp -j ACCEPT
-iptables -A INPUT -s "$dns3" 92.55.62.203 -p icmp -j ACCEPT
-iptables -A INPUT -p icmp -j DROP
+#iptables -A INPUT -s "$dns1" 185.173.74.22 -p tcp --dport 65505 -j ACCEPT
+#iptables -A INPUT -s "$dns2" 185.203.118.232 -p tcp --dport 65505 -j ACCEPT
+#iptables -A INPUT -s "$dns3" 92.55.62.203 -p tcp --dport 65505 -j ACCEPT
+#iptables -A INPUT -p tcp --dport 65505 -j DROP
+#iptables -A INPUT -p udp --dport 65505 -j DROP
 
-iptables -A INPUT -s "$dns1" 185.173.74.22 -p tcp --dport 65505 -j ACCEPT
-iptables -A INPUT -s "$dns2" 185.203.118.232 -p tcp --dport 65505 -j ACCEPT
-iptables -A INPUT -s "$dns3" 92.55.62.203 -p tcp --dport 65505 -j ACCEPT
-iptables -A INPUT -p tcp --dport 65505 -j DROP
-iptables -A INPUT -p udp --dport 65505 -j DROP
-
-iptables -A INPUT -s "$dns1" 185.173.74.22 -p tcp --dport 65506 -j ACCEPT
-iptables -A INPUT -s "$dns2" 185.203.118.232 -p tcp --dport 65506 -j ACCEPT
-iptables -A INPUT -s "$dns3" 92.55.62.203 -p tcp --dport 65506 -j ACCEPT
-iptables -A INPUT -p tcp --dport 65506 -j DROP
-iptables -A INPUT -p udp --dport 65506 -j DROP
-
-
-iptables -A INPUT -p tcp --dport 443 -j ACCEPT
+#iptables -A INPUT -s "$dns1" 185.173.74.22 -p tcp --dport 65506 -j ACCEPT
+#iptables -A INPUT -s "$dns2" 185.203.118.232 -p tcp --dport 65506 -j ACCEPT
+#iptables -A INPUT -s "$dns3" 92.55.62.203 -p tcp --dport 65506 -j ACCEPT
+#iptables -A INPUT -p tcp --dport 65506 -j DROP
+#iptables -A INPUT -p udp --dport 65506 -j DROP
 
 
+#iptables -A INPUT -p tcp --dport 443 -j ACCEPT
 
 
 
-iptables -A INPUT -j DROP
 
-iptables -P INPUT DROP
+
+#iptables -A INPUT -j DROP
+
+#iptables -P INPUT DROP
 
 ###sudo iptables -nvL --line-numbers
 #добавить правило для нормальной работы ping
@@ -251,8 +251,8 @@ iptables -P INPUT DROP
 #закрыть политику цепочки INPUT
 ###sudo iptables -P INPUT DROP
 #сохранить правила iptables в файлик
-}
-Sozdanie_pravil_v_IPTables
+#}
+#Sozdanie_pravil_v_IPTables
 ###УБРАТЬ #  ГДЕ 3 ШТУКИ
 
 
