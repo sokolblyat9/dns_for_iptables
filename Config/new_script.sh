@@ -1,22 +1,30 @@
 #!/bin/bash
 function Proverka_BD {
-echo -e "Проверим установлен ли PostgeSQL на системе\n"
+echo "=============================="
+echo -e "\nПроверим установлен ли PostgeSQL на системе\n"
 os_release=$(uname -a)
-proverka_download_bd=$(psql --version)
 if [[ $os_release == *"Ubuntu"* || $os_release == *"Debian"* ]]; then
+    proverka_download_bd=$(psql --version 2>/dev/null)
     if [[ $proverka_download_bd == *"(PostgreSQL)"* ]]; then
-        echo -e "PostgreSQL УСТАНОВЛЕН\n"
+        echo -e "\nPostgreSQL УСТАНОВЛЕН\n"
+        echo "=============================="
 
     else
-        echo -e "Установлю PostgreSQL\n"
-        sudo apt install postgresql -y >/dev/null
+        echo -e "\nУстановлю PostgreSQL\n"
+        sudo apt update && sudo apt install postgresql -y
+        echo -e "\nPostgreSQL установлен\n"
+        echo "=============================="
     fi
 elif [[ $os_release == *"MANJARO"* || $os_release == *"archlinux"* ]]; then
+    proverka_download_bd=$(psql --version)
     if [[ $proverka_download_bd == *"(PostgreSQL)"* ]]; then
-        echo -e "PostgreSQL УСТАНОВЛЕН\n"
+        echo -e "\nPostgreSQL УСТАНОВЛЕН\n"
+        echo "=============================="
     else
-        echo -e "Установлю PostgreSQL\n"
-        sudo pacman -S postgresql
+        echo -e "\nУстановлю PostgreSQL\n"
+        sudo pacman -Sy postgresql
+        echo -e "\nPostgreSQL установлен\n"
+        echo "=============================="
     fi
 else
     echo -e "ты юзаешь какую то другую систему чел\n"
@@ -25,23 +33,31 @@ fi
 Proverka_BD
 
 function Proverka_Iptables {
-echo -e "Проверим установлен ли IPTables на системе\n"
+echo "=============================="
+echo -e "\nПроверим установлен ли IPTables на системе\n"
 os_release=$(uname -a)
-proverka_download_iptables=$(iptables --version)
 if [[ $os_release == *"Ubuntu"* || $os_release == *"Debian"* ]]; then
+    proverka_download_iptables=$(sudo iptables --version 2>/dev/null)
     if [[ $proverka_download_iptables == *"iptables v"* ]]; then
-        echo -e "IPTABLES установлен\n"
+        echo -e "\nIPTABLES установлен\n"
+        echo "=============================="
 
     else
-        echo -e "Установлю IPTABLES\n"
-        sudo apt install iptables -y >/dev/null
+        echo -e "\nУстановлю IPTABLES\n"
+        sudo apt install iptables -y
+        echo -e "\nIPTABLES установлен\n"
+        echo "=============================="
     fi
 elif [[ $os_release == *"MANJARO"* || $os_release == *"archlinux"* ]]; then
+    proverka_download_iptables=$(iptables --version)
     if [[ $proverka_download_iptables == *"iptables v"* ]]; then
-        echo -e "IPTABLES УСТАНОВЛЕН\n"
+        echo -e "\nIPTABLES УСТАНОВЛЕН\n"
+        echo "=============================="
     else
-        echo -e "Установлю IPTABLES\n"
+        echo -e "\nУстановлю IPTABLES\n"
         sudo pacman -S iptables
+        echo -e "\nIPTABLES установлен\n"
+        echo "=============================="
     fi
 else
     echo -e "Ты точно используешь какой-нибудь фаервол???\n"
@@ -52,24 +68,33 @@ Proverka_Iptables
 
 
 function Proverka_Iptables-Persistent {
-echo -e "Проверим установлена ли утиита IPTables-Persistent/Save на системе, для сохранения внесенных изменений в IPTABLES\n"
+echo "=============================="
+echo -e "\nПроверим установлена ли утиита IPTables-Persistent/Save на системе, для сохранения внесенных изменений в IPTABLES\n"
 os_release=$(uname -a)
 #proverka_download_iptables_persistent=$(iptables-persistent --version)
-proverka_download_iptables_save=$(iptables-save --version)
+
 if [[ $os_release == *"Ubuntu"* || $os_release == *"Debian"* ]]; then
-    if [[ $proverka_download_iptables_persistent == *"iptables v"* ]]; then
-        echo -e "IPTABLES установлен\n"
+    proverka_download_iptables_save=$(sudo iptables-save --version 2>/dev/null)
+    if [[ $proverka_download_iptables_save == *"iptables-save v"* ]]; then
+        echo -e "\nУтилита для сохранения правил IPTABLES установлена\n"
+        echo "=============================="
 
     else
-        echo -e "Установлю IPTABLES\n"
-        sudo apt install iptables-persistent -y >/dev/null
+        echo -e "\nУстановлю пакет IPTABLES\n"
+        sudo apt install iptables-persistent
+        echo -e "\nПакет IPTABLES установлен\n"
+        echo "=============================="
     fi
 elif [[ $os_release == *"MANJARO"* || $os_release == *"archlinux"* ]]; then
+    proverka_download_iptables_save=$(iptables-save --version)
     if [[ $proverka_download_iptables_save == *"iptables-save v"* ]]; then
-        echo -e "Утилита для сохранения правил IPTABLES установлена\n"
+        echo -e "\nУтилита для сохранения правил IPTABLES установлена\n"
+        echo "=============================="
     else
-        echo -e "Обновлю репозиторий и установлю пакет IPTABLES\n"
-        sudo pacman -Sy iptables
+        echo -e "\nУстановлю пакет IPTABLES\n"
+        sudo pacman -S iptables
+        echo -e "\nПакет IPTABLES установлен\n"
+        echo "=============================="
     fi
 else
     echo -e "Ты точно используешь какой-нибудь фаервол???\n"
@@ -78,14 +103,30 @@ fi
 Proverka_Iptables-Persistent
 
 function Proverka_DIG {
+echo "=============================="
+echo -e "\nПроверим установлена ли утиита DIG в составе пакета BIND\n"
 os_release=$(uname -a)
-proverka_download_dig=$(dig -v)
-if [[ $os_release == *"MANJARO"* || $os_release == *"archlinux"* ]]; then
+if [[ $os_release == *"Ubuntu"* || $os_release == *"Debian"* ]]; then
+    proverka_download_dig=$(dig -v 2>/dev/null)
     if [[ $proverka_download_dig == *"DiG"* ]]; then
-        echo -e "Утилита DIG в составе пакета BIND установлена\n"
+        echo -e "\nУтилита DIG в составе пакета BIND установлена\n"
+        echo "=============================="
     else
-        echo -e "Установлю пакет BIND, в который входит утилита DIG\n"
-        sudo pacman -Sy bind
+        echo -e "\nУстановлю пакет BIND, в который входит утилита DIG\n"
+        sudo apt install bind9 bind9-utils
+        echo -e "\nУтилита DIG в составе пакета BIND установлена\n"
+        echo "=============================="
+    fi
+elif [[ $os_release == *"MANJARO"* || $os_release == *"archlinux"* ]]; then
+    proverka_download_dig=$(dig -v)
+    if [[ $proverka_download_dig == *"DiG"* ]]; then
+        echo -e "\nУтилита DIG в составе пакета BIND установлена\n"
+        echo "=============================="
+    else
+        echo -e "\nУстановлю пакет BIND, в который входит утилита DIG\n"
+        sudo pacman -S bind
+        echo -e "\nУтилита DIG в составе пакета BIND установлена\n"
+        echo "=============================="
     fi
 else
     echo -e "Ты юзаешь другую систему\n"
@@ -96,6 +137,16 @@ Proverka_DIG
 
 #Рабочий код:
 function DNS_Provider_And_Plus_BD_And_Plus_Firewall {
+
+os_release=$(uname -a)
+if [[ $os_release == *"Ubuntu"* || $os_release == *"Debian"* ]]; then
+    echo ""
+    read -p "Какой пароль для пользователя postgres ты хочешь установить? Это обязательно нужно сделать для Ubuntu/Debian:   " parol_postgres
+    #sudo -u postgres psql -c "ALTER USER postgres WITH PASSWORD '$parol_postgres';"
+    sudo -iu postgres psql -c "ALTER USER postgres WITH PASSWORD '$parol_postgres'; " >/dev/null
+
+fi
+
 massiv_ip_addresov=()
 echo -e "Создам базу данных для хранения значений\n"
 createdb -h localhost -p 5432 -U postgres For_Cron
@@ -403,9 +454,9 @@ smena_policy_input_and_block_all
 
 sohranenie_pravil_iptables() {
 os_release=$(uname -a)
-#if [[ $os_release == *"Ubuntu"* || $os_release == *"Debian"* ]]; then
-
-if [[ $os_release == *"MANJARO"* || $os_release == *"archlinux"* ]]; then
+if [[ $os_release == *"Ubuntu"* || $os_release == *"Debian"* ]]; then
+    sudo su - root -c "iptables-save > /etc/iptables/rules.v4"
+elif [[ $os_release == *"MANJARO"* || $os_release == *"archlinux"* ]]; then
     sudo su - root -c "iptables-save > /etc/iptables/iptables.rules"
 else
     echo "ты юзаешь какую то другую систему чел"
