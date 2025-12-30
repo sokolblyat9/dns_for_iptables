@@ -69,7 +69,7 @@ Proverka_Iptables
 
 function Proverka_Iptables-Persistent {
 echo "=============================="
-echo -e "\nПроверим установлена ли утиита IPTables-Persistent/Save на системе, для сохранения внесенных изменений в IPTABLES\n"
+echo -e "\nПроверим установлена ли утиkита IPTables-Persistent/Save на системе, для сохранения внесенных изменений в IPTABLES\n"
 os_release=$(uname -a)
  #proverka_download_iptables_persistent=$(iptables-persistent --version)
 if [[ $os_release == *"Ubuntu"* || $os_release == *"Debian"* ]]; then
@@ -79,9 +79,9 @@ if [[ $os_release == *"Ubuntu"* || $os_release == *"Debian"* ]]; then
          echo "=============================="
 
      else
-         echo -e "\nУстановлю пакет IPTABLES\n"
+         echo -e "\nУстановлю пакет IPTables-Persistent\n"
          sudo apt install iptables-persistent -y
-         echo -e "\nПакет IPTABLES установлен\n"
+         echo -e "\nПакет IPTables-Persistent установлен\n"
          echo "=============================="
      fi
 # # # elif [[ $os_release == *"MANJARO"* || $os_release == *"archlinux"* ]]; then
