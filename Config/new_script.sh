@@ -106,7 +106,7 @@ echo "=============================="
 echo -e "\nПроверим установлена ли утиита DIG в составе пакета BIND\n"
 os_release=$(uname -a)
 if [[ $os_release == *"Ubuntu"* || $os_release == *"Debian"* ]]; then
-    proverka_download_dig=$(dig -v 2>/dev/null)
+    proverka_download_dig=$(dig -v 2>&1)
     if [[ $proverka_download_dig == *"DiG"* ]]; then
         echo -e "\nУтилита DIG в составе пакета BIND установлена\n"
         echo "=============================="
