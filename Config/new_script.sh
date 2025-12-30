@@ -71,33 +71,32 @@ function Proverka_Iptables-Persistent {
 echo "=============================="
 echo -e "\nПроверим установлена ли утиита IPTables-Persistent/Save на системе, для сохранения внесенных изменений в IPTABLES\n"
 os_release=$(uname -a)
-#proverka_download_iptables_persistent=$(iptables-persistent --version)
-
+ #proverka_download_iptables_persistent=$(iptables-persistent --version)
 if [[ $os_release == *"Ubuntu"* || $os_release == *"Debian"* ]]; then
-    proverka_download_iptables_save=$(sudo iptables-save --version 2>/dev/null)
-    if [[ $proverka_download_iptables_save == *"iptables-save v"* ]]; then
+    proverka_download_iptables_save=$(dpkg -s iptables-persistent 2>/dev/null | grep Version )
+    if [[ $proverka_download_iptables_save == *"Version:"* ]]; then
         echo -e "\nУтилита для сохранения правил IPTABLES установлена\n"
-        echo "=============================="
+         echo "=============================="
 
-    else
-        echo -e "\nУстановлю пакет IPTABLES\n"
-        sudo apt install iptables-persistent
-        echo -e "\nПакет IPTABLES установлен\n"
-        echo "=============================="
-    fi
-elif [[ $os_release == *"MANJARO"* || $os_release == *"archlinux"* ]]; then
-    proverka_download_iptables_save=$(iptables-save --version)
-    if [[ $proverka_download_iptables_save == *"iptables-save v"* ]]; then
-        echo -e "\nУтилита для сохранения правил IPTABLES установлена\n"
-        echo "=============================="
-    else
-        echo -e "\nУстановлю пакет IPTABLES\n"
-        sudo pacman -S iptables
-        echo -e "\nПакет IPTABLES установлен\n"
-        echo "=============================="
-    fi
+     else
+         echo -e "\nУстановлю пакет IPTABLES\n"
+         sudo apt install iptables-persistent -y
+         echo -e "\nПакет IPTABLES установлен\n"
+         echo "=============================="
+     fi
+# # # elif [[ $os_release == *"MANJARO"* || $os_release == *"archlinux"* ]]; then
+# # #      proverka_download_iptables_save=$(iptables-save --version)
+# # #      if [[ $proverka_download_iptables_save == *"iptables-save v"* ]]; then
+# # #          echo -e "\nУтилита для сохранения правил IPTABLES установлена\n"
+# # #          echo "=============================="
+# # #      else
+# # #          echo -e "\nУстановлю пакет IPTABLES\n"
+# # #          sudo pacman -S iptables
+# # #          echo -e "\nПакет IPTABLES установлен\n"
+# # #          echo "=============================="
+# # #      fi
 else
-    echo -e "Ты точно используешь какой-нибудь фаервол???\n"
+     echo -e "Ты точно используешь какой-нибудь фаервол???\n"
 fi
 }
 Proverka_Iptables-Persistent
@@ -141,7 +140,7 @@ function DNS_Provider_And_Plus_BD_And_Plus_Firewall {
 os_release=$(uname -a)
 if [[ $os_release == *"Ubuntu"* || $os_release == *"Debian"* ]]; then
     echo ""
-    read -p "Какой пароль для пользователя postgres ты хочешь установить? Это обязательно нужно сделать для Ubuntu/Debian:   " parol_postgres
+    read -p "Какой пароль для ПОЛЬЗОВАТЕЛЯ POSTGRES ты хочешь установить? Это обязательно нужно сделать для Ubuntu/Debian:   " parol_postgres
     #sudo -u postgres psql -c "ALTER USER postgres WITH PASSWORD '$parol_postgres';"
     sudo -iu postgres psql -c "ALTER USER postgres WITH PASSWORD '$parol_postgres'; " >/dev/null
 
