@@ -1,50 +1,50 @@
 #!/bin/bash
 function Proverka_BD {
-echo "Проверим установлен ли PostgeSQL на системе"
+echo -e "Проверим установлен ли PostgeSQL на системе\n"
 os_release=$(uname -a)
 proverka_download_bd=$(psql --version)
 if [[ $os_release == *"Ubuntu"* || $os_release == *"Debian"* ]]; then
     if [[ $proverka_download_bd == *"(PostgreSQL)"* ]]; then
-        echo "PostgreSQL УСТАНОВЛЕН"
+        echo -e "PostgreSQL УСТАНОВЛЕН\n"
 
     else
-        echo "Установлю PostgreSQL"
+        echo -e "Установлю PostgreSQL\n"
         sudo apt install postgresql -y >/dev/null
     fi
 elif [[ $os_release == *"MANJARO"* || $os_release == *"archlinux"* ]]; then
     if [[ $proverka_download_bd == *"(PostgreSQL)"* ]]; then
-        echo "PostgreSQL УСТАНОВЛЕН"
+        echo -e "PostgreSQL УСТАНОВЛЕН\n"
     else
-        echo "Установлю PostgreSQL"
+        echo -e "Установлю PostgreSQL\n"
         sudo pacman -S postgresql
     fi
 else
-    echo "ты юзаешь какую то другую систему чел"
+    echo -e "ты юзаешь какую то другую систему чел\n"
 fi
 }
 Proverka_BD
 
 function Proverka_Iptables {
-echo "Проверим установлен ли IPTables на системе"
+echo -e "Проверим установлен ли IPTables на системе\n"
 os_release=$(uname -a)
 proverka_download_iptables=$(iptables --version)
 if [[ $os_release == *"Ubuntu"* || $os_release == *"Debian"* ]]; then
     if [[ $proverka_download_iptables == *"iptables v"* ]]; then
-        echo "IPTABLES установлен"
+        echo -e "IPTABLES установлен\n"
 
     else
-        echo "Установлю IPTABLES"
+        echo -e "Установлю IPTABLES\n"
         sudo apt install iptables -y >/dev/null
     fi
 elif [[ $os_release == *"MANJARO"* || $os_release == *"archlinux"* ]]; then
     if [[ $proverka_download_iptables == *"iptables v"* ]]; then
-        echo "IPTABLES УСТАНОВЛЕН"
+        echo -e "IPTABLES УСТАНОВЛЕН\n"
     else
-        echo "Установлю IPTABLES"
+        echo -e "Установлю IPTABLES\n"
         sudo pacman -S iptables
     fi
 else
-    echo "Ты точно используешь какой-нибудь фаервол???"
+    echo -e "Ты точно используешь какой-нибудь фаервол???\n"
 fi
 }
 Proverka_Iptables
@@ -52,21 +52,27 @@ Proverka_Iptables
 
 
 function Proverka_Iptables-Persistent {
-echo "Проверим установлен ли IPTables на системе"
+echo -e "Проверим установлена ли утиита IPTables-Persistent/Save на системе, для сохранения внесенных изменений в IPTABLES\n"
 os_release=$(uname -a)
 #proverka_download_iptables_persistent=$(iptables-persistent --version)
 proverka_download_iptables_save=$(iptables-save --version)
 if [[ $os_release == *"Ubuntu"* || $os_release == *"Debian"* ]]; then
     if [[ $proverka_download_iptables_persistent == *"iptables v"* ]]; then
-        echo "IPTABLES установлен"
+        echo -e "IPTABLES установлен\n"
 
     else
-        echo "Установлю IPTABLES"
+        echo -e "Установлю IPTABLES\n"
         sudo apt install iptables-persistent -y >/dev/null
     fi
-
+elif [[ $os_release == *"MANJARO"* || $os_release == *"archlinux"* ]]; then
+    if [[ $proverka_download_iptables_save == *"iptables-save v"* ]]; then
+        echo -e "Утилита для сохранения правил IPTABLES установлена\n"
+    else
+        echo -e "Обновлю репозиторий и установлю пакет IPTABLES\n"
+        sudo pacman -Sy iptables
+    fi
 else
-    echo "Ты точно используешь какой-нибудь фаервол???"
+    echo -e "Ты точно используешь какой-нибудь фаервол???\n"
 fi
 }
 Proverka_Iptables-Persistent
@@ -76,12 +82,13 @@ os_release=$(uname -a)
 proverka_download_dig=$(dig -v)
 if [[ $os_release == *"MANJARO"* || $os_release == *"archlinux"* ]]; then
     if [[ $proverka_download_dig == *"DiG"* ]]; then
-        echo "Утилита DIG в составе пакета BIND установлена"
+        echo -e "Утилита DIG в составе пакета BIND установлена\n"
     else
+        echo -e "Установлю пакет BIND, в который входит утилита DIG\n"
         sudo pacman -Sy bind
     fi
 else
-    echo "Ты юзаешь другую систему"
+    echo -e "Ты юзаешь другую систему\n"
 fi
 }
 Proverka_DIG
@@ -90,9 +97,9 @@ Proverka_DIG
 #Рабочий код:
 function DNS_Provider_And_Plus_BD_And_Plus_Firewall {
 massiv_ip_addresov=()
-echo "Создам базу данных для хранения значений"
+echo -e "Создам базу данных для хранения значений\n"
 createdb -h localhost -p 5432 -U postgres For_Cron
-psql -h localhost -p 5432 -U postgres For_Cron -c 'CREATE TABLE infa (id BIGSERIAL NOT NULL PRIMARY KEY, "Наименование ДНС Службы" VARCHAR(30) NOT NULL, "Имя ДНС Службы" VARCHAR(50) NOT NULL, "IP адрес" VARCHAR(160));'
+psql -h localhost -p 5432 -U postgres For_Cron -c 'CREATE TABLE infa (id BIGSERIAL NOT NULL PRIMARY KEY, "Наименование ДНС Службы" VARCHAR(30) NOT NULL, "Имя ДНС Службы" VARCHAR(50) NOT NULL, "IP адрес" VARCHAR(160));' >/dev/null
 read -p "Сколько хочешь добавить днс провайдеров?   " kolichestvo
 for (( a=1; a<=$kolichestvo; a++ ));
 do
@@ -104,7 +111,7 @@ do
    echo "Внесу значения в базу данных"
     for IP_and_DNS in $massiv_ip_addresov
     do
-        psql -h localhost -p 5432 -U postgres For_Cron -c "INSERT INTO infa (\"Наименование ДНС Службы\", \"Имя ДНС Службы\", \"IP адрес\") VALUES ('$dns_provider', '$dns_name_provider', '$IP_and_DNS');" #>/dev/null
+        psql -h localhost -p 5432 -U postgres For_Cron -c "INSERT INTO infa (\"Наименование ДНС Службы\", \"Имя ДНС Службы\", \"IP адрес\") VALUES ('$dns_provider', '$dns_name_provider', '$IP_and_DNS');" >/dev/null
     done
 
     massiv_ip_addresov=""
